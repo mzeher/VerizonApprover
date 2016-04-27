@@ -72,19 +72,14 @@ Four51: Jen R.
 
 ##### Modified Files
 `index.html` 
-* adding custom js files / lines 119-121
-
-`css/custom.css` 
-* removing inline styles / lines 10-96
+* adding custom js files / lines 68-72
 
 `js/routing.js` 
-* changing the default routing to orders / lines 48-51
+* altering the universe (or maybe a duplicate like "Fringe") / lines 12-20
 
 `js/services/orderSearchService.js` 
 * concatenate user First & Last / lines 31-35
 
-
- 
 ##### Custom Files
 
 ###### JS
