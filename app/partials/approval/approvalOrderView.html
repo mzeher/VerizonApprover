@@ -1,0 +1,237 @@
+<div class="text-center text-success" ng-show="!selectedOrder">
+    <h2>{{orderMessage}}</h2>
+</div>
+<div class="text-center" ng-show="!selectedOrder">
+    <h2>Please select an {{'order' | rc}}</h2>
+</div>
+<section class="approval-order-view container" ng-show="selectedOrder">
+    <loadingindicator ng-show="orderLoadingIndicator" title="Please wait while we fetch your order"></loadingindicator>
+    <div class="row">
+        <div class="col-sm-6 col-md-12 col-lg-6">
+            <div class="row" style="margin-top:10px; margin-bottom:10px;">
+                <div class="col-xs-3 text-center">
+                    <div class="date-badge">
+                        <div>{{selectedOrder.DateCreated | date:'MMM'}}</div>
+                        <h3>{{selectedOrder.DateCreated | date:'dd'}}</h3>
+                        <div>{{selectedOrder.DateCreated | date:'EEEE'}}</div>
+                    </div>
+                </div>
+                <div class="col-xs-9">
+                    <h4 class="text-center">Order ID: <b>{{selectedOrder.ExternalID}}</b></h4>
+                    <div class="row">
+                        <div ng-class="{'col-sm-6': selectedOrder.CostCenter}">
+                            <ul class="list-group">
+                                <li class="list-group-item text-center"><small><b>Payment Method</b></small></li>
+                                <li class="list-group-item text-center" style="padding:7px 10px;">
+                                    {{selectedOrder.PaymentMethodText}}<br ng-show="selectedOrder.CreditCard.Type">
+                                    <small ng-show="selectedOrder.CreditCard.Type">{{selectedOrder.CreditCard.DisplayName}}</small>
+                                </li>
+                            </ul>
+                        </div>
+                        <div ng-show="selectedOrder.CostCenter" ng-class="{'col-sm-6': selectedOrder.CostCenter}">
+                            <ul class="list-group">
+                                <li class="list-group-item text-center"><small><b>Cost Center</b></small></li>
+                                <li class="list-group-item text-center" style="padding:7px 10px;">{{selectedOrder.CostCenter}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center" style="margin-bottom: 15px;">
+                <div class="btn btn-warning btn-block hidden-md hidden-lg" ng-click="changeStep(0)">Back to all {{'order' | r}}s</div>
+            </div>
+            <div class="well">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <i class="fa fa-user fa-2x text-muted pull-left"></i>
+                        <h5><b>CREATOR</b></h5>
+                    </div>
+                    <div class="col-xs-6">
+                        <h5 class="text-info text-right">{{selectedOrder.FromUserFirstName + ' ' + selectedOrder.FromUserLastName}}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="well" ng-show="selectedOrder.Comments">
+                <div class="row">
+                    <i class="fa fa-comments fa-2x text-muted pull-left"></i>
+                    <h5><b>COMMENTS</b></h5>
+                </div>
+                <div class="row">
+                    <h5 class="text-info text-right">{{selectedOrder.Comments}}</h5>
+                </div>
+            </div>
+            <!--<div class="well">
+                <div class="row">
+                    <i class="fa fa-file-text fa-2x text-muted pull-left"></i>
+                    <h5><b>COST SUMMARY</b></h5>
+                </div>
+                <div class="row">
+                    <div class="cost-summary text-right">
+                        <p><span class="text-info">Subtotal</span>{{selectedOrder.Subtotal | currency:"$"}}</p>
+                        <p><span class="text-info">Shipping & Handling</span>{{selectedOrder.ShippingCost | currency:"$"}}</p>
+                        <p><span class="text-info">Tax</span>{{selectedOrder.TaxCost | currency:"$"}}</p>
+                        <p ng-if="selectedOrder.Coupon"><span class="text-info">Coupon ({{selectedOrder.Coupon.Label}})</span>
+                            {{selectedOrder.Coupon.selectedOrderDiscount * -1 | currency}}</p>
+                        <hr style="border-top-color: #DDDDDD;">
+                        <h3><span class="text-info">Total</span>{{selectedOrder.Total | currency:"$"}}</h3>
+                    </div>
+                </div>
+            </div>-->
+            <div class="row">
+                <div class="container" ng-class="{'col-sm-6': (selectedOrder.BillAddress && selectedOrder.ShipAddress)}" ng-show="!selectedOrder.IsMultipleShip()">
+                    <div class="well" ng-show="selectedOrder.ShipAddress">
+                        <i class="fa fa-map-marker fa-2x text-muted pull-left"></i>
+                        <h5><b>SHIPPING ADDRESS</b></h5>
+                        <div class="row">
+                            <address>
+                                <p class="text-right">
+                                    {{(selectedOrder.LineItems[0].ShipFirstName || selectedOrder.ShipAddress.FirstName) + ' ' + (selectedOrder.LineItems[0].ShipLastName || selectedOrder.ShipAddress.LastName)}}
+                                </p>
+                                <p class="text-right">{{selectedOrder.ShipAddress.CompanyName}}</p>
+                                <p class="text-right">{{selectedOrder.ShipAddress.Street1}}</p>
+                                <p class="text-right">{{selectedOrder.ShipAddress.Street2}}</p>
+                                <p class="text-right">{{selectedOrder.ShipAddress.City}}
+                                    <span ng-show="selectedOrder.ShipAddress.City && selectedOrder.ShipAddress.State">,</span>
+                                    {{selectedOrder.ShipAddress.State}} {{selectedOrder.ShipAddress.Zip}}
+                                </p>
+                            </address>
+                        </div>
+                    </div>
+                </div>
+                <div class="container" ng-class="{'col-sm-6': (selectedOrder.BillAddress && (selectedOrder.ShipAddress && !selectedOrder.IsMultipleShip()))}">
+                    <div class="well" ng-show="selectedOrder.BillAddress">
+                        <i class="fa fa-map-marker fa-2x text-muted pull-left"></i>
+                        <h5><b>BILLING ADDRESS</b></h5>
+                        <div class="row">
+                            <address>
+                                <p class="text-right">
+                                    {{(selectedOrder.BillFirstName || selectedOrder.BillAddress.FirstName) + ' ' + (selectedOrder.BillLastName || selectedOrder.BillAddress.LastName)}}
+                                </p>
+                                <p class="text-right">{{selectedOrder.ShipAddress.CompanyName}}</p>
+                                <p class="text-right">{{selectedOrder.BillAddress.Street1}}</p>
+                                <p class="text-right">{{selectedOrder.BillAddress.Street2}}</p>
+                                <p class="text-right">{{selectedOrder.BillAddress.City}}
+                                    <span ng-show="selectedOrder.BillAddress.City && selectedOrder.BillAddress.State">,</span>
+                                    {{selectedOrder.BillAddress.State}} {{selectedOrder.BillAddress.Zip}}
+                                </p>
+                            </address>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-12 col-lg-6">
+            <div class="row" id="linetop"></div>
+            <div class="panel panel-default" ng-class="{'ng-hide':viewToggle == 2}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        {{selectedOrder.LineItems.length}} {{'Item' + (selectedOrder.LineItems.length > 1 ? 's' : '') | rl}} in this {{'Order' | rl}}
+                    </h3>
+                </div>
+                <div class="panel-lineitem" ng-repeat="item in selectedOrder.LineItems">
+                    <div class="col-md-3 ">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12">
+                                <p class="quantity-total text-center" style="border: 1px solid #ddd;">
+                                    <small>{{'Quantity' | r}}<br/>
+                                        <span ng-show="item.Quantity * item.Product.QuantityMultiplier">{{item.Quantity * item.Product.QuantityMultiplier}}</span>
+                                    </small>
+                                </p>
+                            </div>
+                            <div class="col-xs-6 col-sm-12 col-md-6 col-lg-12 thumbnail" ng-show="item.Variant.LargeImageUrl || item.Product.SmallImageUrl">
+                                <figure>
+                                    <img ng-src="{{item.Variant.LargeImageUrl || item.Product.SmallImageUrl}}" />
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9 ">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-12" >
+                                <a ng-click="viewLineItem(item); changeStep(2)">
+                                    <h3 class="text-primary">
+                                        <i class="fa fa-eye"></i>
+                                        {{item.ProductIDText}}
+                                    </h3>
+                                    <p>
+                                        {{item.Product.Name}}
+                                    </p>
+                                </a>
+                            </div>
+                            <div class="col-md-6 col-lg-12">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div ng-if="!(user.Permissions.contains('HidePricing'))">
+                                            <small>{{'Total' | r}}</small>
+                                            <h4 class="text-success" style="margin-top: 0;">
+                                                {{item.LineTotal | currency}}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" ng-if="!(user.Permissions.contains('HidePricing'))">
+                                        <p>
+                                            <small>{{'Unit Price' | r}}</small>
+                                            <br/>
+                                            {{item.UnitPrice | currency}}
+                                        </p>
+                                    </div>
+                                    <div class="col-xs-3" ng-if="item.CostCenter">
+                                        <p>
+                                            <small>{{'Cost Center' | r}}</small>
+                                            <br/>
+                                            {{item.CostCenter}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button class="btn btn-default btn-block" ng-show="item.SpecsLength > 0" ng-init="toggleSpecs = false" ng-click="toggleSpecs = !toggleSpecs">
+                                    <span ng-show="toggleSpecs == false"><i class="fa fa-plus-circle"></i> {{'Show' | r}} </span>
+                                    <span ng-show="toggleSpecs == true"><i class="fa fa-minus-circle"></i> {{'Hide' | r}} </span>
+                                    {{'Specs' | r}}
+                                </button>
+                            </div>
+                            <div class="col-md-8">
+                                <ul collapse="!toggleSpecs" class="list-group">
+                                    <li ng-repeat="spec in item.Specs | filter:{'CanSetForLineItem':true} " class="list-group-item">
+                                        <span class="text-info">{{spec.Name}}: </span>
+                                        <span ng-if="spec.ControlType == 'File'"><a ng-href="{{spec.File.Url}}">{{spec.File.OriginalName + Extension}}</a></span>
+                                        <span ng-if="spec.ControlType != 'File'">{{spec.Value || '(unspecified)'}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="selectedOrder.IsMultipleShip()">
+                            <div class="col-md-4">
+                                <button class="btn btn-default btn-block" ng-init="toggleShipping = false" ng-click="toggleShipping = !toggleShipping">
+                                    <span ng-show="toggleShipping == false"><i class="fa fa-plus-circle"></i> {{'Shipping' | r}} {{'Address' | r}} </span>
+                                    <span ng-show="toggleShipping == true"><i class="fa fa-minus-circle"></i> {{'Shipping' | r}} {{'Address' | r}} </span>
+                                </button>
+                            </div>
+                            <div class="col-md-8">
+                                <address class="well well-sm" collapse="!toggleShipping">
+                                    <p>{{(item.ShipFirstName || item.ShipAddress.FirstName) + ' ' + (item.ShipLastName || item.ShipAddress.LastName)}}</p>
+                                    <p>{{item.ShipAddress.CompanyName}}</p>
+                                    <p>{{item.ShipAddress.Street1}}</p>
+                                    <p>{{item.ShipAddress.Street2}}</p>
+                                    <p>
+                                        {{item.ShipAddress.City}}<span ng-show="item.ShipAddress.City && item.ShipAddress.State">,</span>
+                                        {{item.ShipAddress.State}} {{item.ShipAddress.Zip}}
+                                    </p>
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-include class="container" ng-class="{'ng-hide':viewToggle != 2}" src="'partials/approval/approvalLineItemView.html'"></ng-include>
+        </div>
+    </div>
+    <div class="approval-buttons">
+        <div class="btn btn-block btn-warning hidden-md hidden-lg" ng-click="changeStep(0)">Back to all {{'order' | r}}s</div>
+    </div>
+    <approval ng-show="selectedOrder.Status == 'AwaitingApproval' && (selectedOrder.UserCanApprove || user.Permissions.contains('ApproveAllOrders'))" order="selectedOrder"></approval>
+</section>

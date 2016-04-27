@@ -1,0 +1,22 @@
+<ng-include src="'partials/controls/dashboard.html'"></ng-include>
+
+<header class="header navbar navbar-inner hidden-xs">
+    <nav class="navbar navbar-default" role="navigation">
+
+        <section>
+            <div class="container">
+                <ul class="nav navbar-nav pull-right">
+                    <li class="logout">
+                        <a href="#"  class="451_btn_logout" ng-click="Logout()">
+                            <i style="border: none;" class="fa fa-sign-out text-danger"></i>
+                            <span class="hidden-xs">{{'Log Out' | r}}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="navbar-header" ng-class="{'ng-hide':!isActive('orders')}" style="margin-right:72px;">
+                    <a style="padding-left:15px;" class="navbar-brand" href="orders">{{'Order' | r}} {{'Approvals' | r}}</a>
+                </div>
+            </div>
+        </section>
+    </nav>
+</header>

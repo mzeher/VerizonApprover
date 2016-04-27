@@ -1,0 +1,27 @@
+<div class="approval-buttons">
+    <div class="view-error-message" ng-show="error || commentToggle">
+        <ul class="alert-warning" ng-show="error">
+            <li class="text-center">
+                {{error}}
+            </li>
+        </ul>
+        <ul class="alert-info text-center" ng-show="commentToggle">
+            <li style="padding:10px; float:none; width:100%;">
+                <textarea class="form-control" ng-model="ApprovalComment" placeholder="{{'Approval' | r}} {{'Comments' | r}}"></textarea>
+            </li>
+        </ul>
+     </div>
+    <ul>
+        <li>
+            <button class="btn btn-block btn-danger" style="text-transform:uppercase;" ng-click="declineOrder()">{{'Decline' | r}}</button>
+        </li>
+        <li>
+            <button class="btn btn-block btn-info" style="text-transform:uppercase;" ng-click="toggleComments()">{{'Comment' | r}}</button>
+        </li>
+        <li>
+            <loadingindicator ng-show="loadingIndicator" title="Please wait while we process your request."></loadingindicator>
+            <button class="btn btn-block btn-success" ng-click="approveOrder()">{{'Approve' | r}}</button>
+        </li>
+    </ul>
+</div>
+
