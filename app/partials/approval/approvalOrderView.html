@@ -84,7 +84,7 @@
                         <h5><b>SHIPPING ADDRESS</b></h5>
                         <div class="row">
                             <address>
-                                <p class="text-right">
+                                <p class="text-right" ng-if="selectedOrder.LineItems[0].ShipFirstName || selectedOrder.ShipAddress.FirstName">
                                     {{(selectedOrder.LineItems[0].ShipFirstName || selectedOrder.ShipAddress.FirstName) + ' ' + (selectedOrder.LineItems[0].ShipLastName || selectedOrder.ShipAddress.LastName)}}
                                 </p>
                                 <p class="text-right">{{selectedOrder.ShipAddress.CompanyName}}</p>
@@ -212,7 +212,7 @@
                             </div>
                             <div class="col-md-8">
                                 <address class="well well-sm" collapse="!toggleShipping">
-                                    <p>{{(item.ShipFirstName || item.ShipAddress.FirstName) + ' ' + (item.ShipLastName || item.ShipAddress.LastName)}}</p>
+                                    <p ng-if="item.ShipFirstName || item.ShipAddress.FirstName">{{(item.ShipFirstName || item.ShipAddress.FirstName) + ' ' + (item.ShipLastName || item.ShipAddress.LastName)}}</p>
                                     <p>{{item.ShipAddress.CompanyName}}</p>
                                     <p>{{item.ShipAddress.Street1}}</p>
                                     <p>{{item.ShipAddress.Street2}}</p>
