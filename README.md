@@ -77,9 +77,6 @@ Four51: Jen R.
 `js/routing.js` 
 * altering the universe (or maybe a duplicate like "Fringe") / lines 12-20
 
-`js/services/orderSearchService.js`  <!--TODO: um no-->
-* concatenate user First & Last / lines 31-35
-
 ##### Custom Files
 
 ###### JS
